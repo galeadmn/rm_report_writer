@@ -148,7 +148,7 @@ def write_reports(output_directory):
     #get the  base_names in unique_set:
     #base_name = "/share/RM_OUTPUT/005_SG_Gale_iCLIP_06_3T3-mT2-3_aFlag_S5Aligned.sortedByCoord.out.fasta"
     for base_name in unique_set:
-	print (base_name.split("/")[-1])
+        print (base_name.split("/")[-1])
         sequences2,total_length2,total_length_excl_NX_runs2,bases_masked2,interspersed_repeats2,num_elements2,len_occupied2 = process_file_set(base_name)
         f = open (base_name.split("/")[-1] + ".summary", "w")
         f.write("============================================================================\n")
@@ -211,6 +211,6 @@ def write_reports(output_directory):
         f.close()
 
 if len(sys.argv) != 2:
-	print "usage:  rm_report_writer.py  <directory containing tbl files>\n"
+	print ("usage:  rm_report_writer.py  <directory containing tbl files>\n")
 else:
         write_reports(sys.argv[1])
