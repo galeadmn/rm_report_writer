@@ -13,6 +13,9 @@ import sys
 indices = (["sines", "alus", "b2b4","ids", "mirs", "lines", "line1", "line2", "l3cr1","ltr",
             "ervl","ervl_malrs", "erv_classI", "erv_classII", "DNA", "hat_charlie", "tcmar", "unclassified",
             "small_rna", "satellites", "simple","low_complex" ])
+species_line = ""
+database_version = ""
+run_with = ""
 
 
 ##################################################################
@@ -20,6 +23,11 @@ indices = (["sines", "alus", "b2b4","ids", "mirs", "lines", "line1", "line2", "l
 ##################################################################
 
 def process_file(file_name):
+    #import the global variables
+    global species_line
+    global database_version
+    global run_with
+
     num_elements = {}
     len_occupied = {}
 
@@ -38,6 +46,7 @@ def process_file(file_name):
 
     f = open(file_name, "r")
     for line in f:
+        original_line = line
         line.strip("\n")
         line = re.sub(" +", " ", line)
         words = line.split(" ")
@@ -98,6 +107,13 @@ def process_file(file_name):
             populate_dictionaries("low_complex", words[2], words[3])
         elif words[0:3] == ["Total", "interspersed", "repeats:"]:
             interspersed_repeats = int (words[3])
+        elif words[0:3] == ["The", "query", "species"]:
+            species_line = original_line
+        elif words[0:3] == ["RepeatMasker", "Combined", "Database:"]:
+            database_version = original_line
+        elif words[0:2] == ["run", "with"]:
+            run_with = original_line
+
     f.close()
     return sequences,total_length,total_length_excl_NX_runs,bases_masked,interspersed_repeats,num_elements,len_occupied
 
@@ -205,9 +221,9 @@ def write_reports(output_directory):
         f.write("\t* most repeats fragmented by insertions or deletions\n")
         f.write("\t  have been counted as one element.\n\n")
 
-        f.write("The query species was assumed to be mus musculus.\n")
-        f.write("RepeatMasker Combined Database: Dfam_Consensus-20170127, RepBase-20170127\n\n")
-        f.write("Run with rmblastn version 2.6.0+\n")
+        f.write(species_line)
+        f.write(database_version + "\n")
+        f.write(run_with)
         f.close()
 
 if len(sys.argv) != 2:
